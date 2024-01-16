@@ -1,0 +1,67 @@
+1. Create 3 tables	
+
+	CREATE TABLE Student (StudentID INT PRIMARY KEY, StudentName VARCHAR(255));
+	INSERT INTO Student VALUES 
+	(1, 'Alice'), 
+	(2, 'Bob'),
+	(3, 'Charlie'),
+	(4, 'David');
+
+	CREATE TABLE Course (CourseID INT PRIMARY KEY, CourseName VARCHAR(255));
+	INSERT INTO Course VALUES 
+	(101, 'Math'),
+	(102, 'English'),
+	(103, 'Science'),
+	(104, 'History');
+
+	CREATE TABLE Enrollment (StudentID INT, CourseID INT, FOREIGN KEY(StudentID) REFERENCES Student(StudentID), FOREIGN KEY(CourseID) REFERENCES Course(CourseID));
+	INSERT INTO Enrollment VALUES 
+	(1, 101),
+	(1, 102),
+	(2, 101),
+	(3, 102),
+	(4, 103);
+
+	SELECT * FROM Student;
+	SELECT * FROM Course;
+	SELECT * FROM Enrollment;
+
+
+2. Write a query to retrieve the names of students who are enrolled in the 'Math' course.
+
+	SELECT s.StudentName, e.CourseID 
+	FROM Student s 
+	JOIN Enrollment e ON s.StudentID = e.StudentID  
+	WHERE e.CourseID IN (SELECT CourseID FROM Course WHERE CourseName = 'Math');
+	
+3. Write a query to find the names of students who are not enrolled in any course.
+
+	SELECT s.StudentName 
+	FROM Student s 
+	LEFT JOIN Enrollment e ON s.StudentID = e.StudentID  
+	WHERE e.CourseID IS NULL;
+	
+4. Write a query to retrieve the names of students who are enrolled in both 'Math' and 'English' courses.
+
+	SELECT s.StudentName, e.CourseID 
+	FROM Student s 
+	JOIN Enrollment e ON s.StudentID = e.StudentID  
+	WHERE e.CourseID IN (SELECT CourseID FROM Course WHERE CourseName IN ('Math', 'English'));
+	
+5. Write a query to find the names of students who are not enrolled in any course using the NOT IN clause.
+
+	SELECT s.StudentName
+	FROM Student s
+	WHERE StudentID NOT IN (SELECT StudentID FROM Enrollment);
+	
+6. Write a query to retrieve the names of students who are enrolled in at least one course using the EXISTS clause.
+
+	SELECT StudentName
+	FROM Student s
+	WHERE EXISTS (SELECT 1 FROM Enrollment e WHERE s.StudentID = e.StudentID);
+	
+7. Write a query to find the names of students who are not enrolled in any course using the NOT EXISTS clause.
+
+	SELECT StudentName
+	FROM Student s
+	WHERE NOT EXISTS (SELECT 1 FROM Enrollment e WHERE s.StudentID = e.StudentID);
